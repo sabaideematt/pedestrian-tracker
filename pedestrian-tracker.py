@@ -1,43 +1,35 @@
 import cv2
 
-# Initialize video capture
-video_path = "path/to/your/video.mp4"  # Replace with the path to your video file
-cap = cv2.VideoCapture(video_path)
+def generate_frames():
+    # Initialize video capture
+    cap = cv2.VideoCapture("path/to/your/video.mp4")
 
-# Initialize HOG descriptor and tracker
-hog = cv2.HOGDescriptor()
-hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
-tracker = cv2.TrackerKCF_create()
+    # Initialize pedestrian detector
+    pedestrian_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
 
-# Initialize variables
-initBB = None
+    while True:
+        ret, frame = cap.read()
+        
+        if not ret:
+            break
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-    
-    # Detect pedestrians if no tracking box is available
-    if initBB is None:
-        boxes, weights = hog.detectMultiScale(frame, winStride=(8, 8))
-        if len(boxes) > 0:
-            initBB = boxes[0]
-            tracker.init(frame, initBB)
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        
+        # Detect pedestrians
+        pedestrians = pedestrian_cascade.detectMultiScale(gray, 1.1, 3)
+        
+        # Draw bounding box
+        for (x, y, w, h) in pedestrians:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
+        
+        # Encode the frame as JPEG
+        ret, buffer = cv2.imencode('.jpg', frame)
+        
+        # Convert to bytes
+        frame = buffer.tobytes()
+        
+        yield frame
 
-    # Update tracking box
-    else:
-        ret, initBB = tracker.update(frame)
-        if ret:
-            x, y, w, h = map(int, initBB)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-    
-    # Display the frame
-    cv2.imshow("Frame", frame)
-    
-    # Break the loop if 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
-
-# Release resources
-cap.release()
-cv2.destroyAllWindows()
+    # Release the video capture object
+    cap.release()
