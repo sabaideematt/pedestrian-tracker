@@ -2,13 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedestrian Tracking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
-<h1>Pedestrian Tracking</h1>
+<header>
+    <h1>Pedestrian Tracking System</h1>
+</header>
 
-<img src="{{ url_for('video_feed') }}" alt="Pedestrian Tracking Live Feed">
+<main>
+    <video id="video-feed" controls autoplay>
+        <source src="{{ url_for('video_feed') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</main>
+
+<footer>
+    Made with ♥ by [Your Name]
+</footer>
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
