@@ -1,68 +1,58 @@
 # Pedestrian Tracker
 
-A computer vision project leveraging OpenCV to detect and track pedestrians in video footage. Integrated with Flask to provide a user-friendly web interface, and SQLite to keep a record of the pedestrian counts.
+An application to track pedestrians in video streams, developed by [Matthew Cabrera](https://github.com/sabaideematt).
 
-## Features
+## Description
 
-- Real-time pedestrian detection from video footage.
-- Live web feed displaying the detected pedestrians.
-- Database integration to store and retrieve pedestrian count data.
-- A stylish and responsive web interface.
+This project uses computer vision to detect and track pedestrians in real-time. It also offers a web interface to visualize the tracking and provides statistics on the number of pedestrians detected.
 
-## Setup & Installation
+## Installation
 
-1. **Clone the Repository**: 
+1. **Clone the Repository**:
+   
+   ```
+   git clone https://github.com/sabaideematt/pedestrian-tracker.git
+   cd pedestrian-tracker
+   ```
 
-    ```bash
-    git clone https://github.com/sabaideematt/pedestrian-tracker.git
-    cd pedestrian-tracker
-    ```
-
-2. **Install Dependencies**:
-
-   Ensure you have Python installed. Then, using pip, install the required packages:
+2. **Set Up a Virtual Environment (Recommended)**:
 
    ```bash
-   pip install flask flask_sqlalchemy opencv-python
+   pip install virtualenv
+   virtualenv venv
    ```
 
-3. **Set Up the Database**:
+   - On Windows: `venv\Scripts\activate`
+   - On macOS and Linux: `source venv/bin/activate`
 
-   Before running the application for the first time, ensure the database is initialized. You can do this by running:
+3. **Install Required Packages**:
 
-   ```python
-   from app import db
-   with app.app_context():
-       db.create_all()
+   ```bash
+   pip install -r requirements.txt
    ```
 
-   Once the tables are created, you won't need to run these lines again.
+4. **Initialize the Database**:
+   
+   After setting up your configurations, run the following script to initialize the SQLite database:
 
-4. **Run the Application**:
+   ```bash
+   python init_db.py
+   ```
+
+## Running the Application
+
+1. Start the Flask application:
 
    ```bash
    python app.py
    ```
 
-   This will start a local development server. Open a web browser and navigate to `http://127.0.0.1:5000/` to see the application in action.
+2. Navigate to `http://localhost:5000` in your web browser to view the tracking interface.
 
-## Project Structure
+## Contributing
 
-- `/static`: Contains static files such as CSS and JavaScript.
-- `/templates`: Contains the HTML templates.
-- `app.py`: Main application file with Flask routes and video processing logic.
-- `models.py`: Contains the database models for SQLAlchemy.
+For contributions, please create a pull request. All contributions by Matthew Cabrera, [@sabaideematt](https://github.com/sabaideematt).
 
-## Future Enhancements
+## License
 
-- Integration with a more robust database like PostgreSQL for scalability.
-- Additional analytics views to show insights from the pedestrian count data.
-- Improved tracking algorithms for better accuracy and detection in diverse scenarios.
-
-## Credits
-
-Project developed by Matthew Cabrera.
-
-OpenCV for computer vision functionalities.
-Flask for the web application framework.
-SQLite for lightweight database functionalities.
+This project is licensed under the MIT License. Refer to the `LICENSE` file for more details.
