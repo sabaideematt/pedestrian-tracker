@@ -1,5 +1,6 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_restful import Api, Resource
 import cv2
 from models import db, PedestrianData, TotalPedestrians
 
@@ -8,6 +9,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pedestrian_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+api = Api(app)
 
 # Load pre-trained model for pedestrian detection
 pedestrian_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
@@ -50,6 +53,15 @@ def generate_frames():
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# RESTful API Resource for Pedestrian Stats
+class PedestrianStatsResource(Resource):
+    def get(self):
+        total_pedestrians = TotalPedestrians.query.first()
+        total_count = total_pedestrians.total_count if total_pedestrians else 0
+        return jsonify({"total_pedestrians_counted": total_count})
+
+api.add_resource(PedestrianStatsResource, '/api/pedestrian-stats')
 
 if __name__ == '__main__':
     app.run(debug=True)
